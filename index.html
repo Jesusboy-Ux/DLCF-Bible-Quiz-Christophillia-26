@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DLCF UNN - Bible Quiz Application | CHRISTOPHILIA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-info">
+        <h1>DLCF UNN BIBLE QUIZ APPLICATION</h1>
+        <p class="theme-subtitle">CHRISTOPHILIA: <em>Timeless Christ: Influencing Campus and Culture</em></p>
+      </div>
+      <div class="header-actions">
+        <button id="toggle-projector-btn" class="btn btn-gold">
+          <span class="icon">📺</span> Projector View Mode
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="main-container" id="main-content">
+    
+    <!-- LEFT PANEL: CONTROL & MANAGEMENT -->
+    <aside class="sidebar-panel">
+      
+      <!-- NAVIGATION TABS -->
+      <nav class="nav-tabs">
+        <button class="tab-btn active" data-tab="tab-control">🎮 Quiz Controls</button>
+        <button class="tab-btn" data-tab="tab-questions">📚 Questions (<span id="q-count-badge">0</span>)</button>
+        <button class="tab-btn" data-tab="tab-candidates">👤 Candidates (<span id="c-count-badge">0</span>)</button>
+        <button class="tab-btn" data-tab="tab-data">💾 Backup / Data</button>
+      </nav>
+
+      <!-- TAB 1: QUIZ CONTROLS & SCORING -->
+      <section id="tab-control" class="tab-content active">
+        <div class="card">
+          <h3>Quiz Session Controls</h3>
+          <div class="status-box">
+            <span>Status: <strong id="quiz-status-text">Not Started</strong></span>
+            <span>Timer: <strong id="quiz-timer-text">35:00</strong></span>
+          </div>
+          <div class="btn-grid">
+            <button id="btn-start-quiz" class="btn btn-success">Start Quiz</button>
+            <button id="btn-pause-quiz" class="btn btn-warning" disabled>Pause Timer</button>
+            <button id="btn-resume-quiz" class="btn btn-primary" style="display:none;">Resume Timer</button>
+            <button id="btn-end-quiz" class="btn btn-danger" disabled>End Quiz</button>
+            <button id="btn-reset-quiz" class="btn btn-outline-danger">Reset Quiz</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Live Point Awarding</h3>
+          <p class="help-text">Select candidate and award point based on quizmaster's call.</p>
+          
+          <div class="form-group">
+            <label for="award-candidate-select">Select Active Candidate:</label>
+            <select id="award-candidate-select" class="form-control">
+              <option value="">-- Select Candidate --</option>
+            </select>
+          </div>
+
+          <div class="award-actions">
+            <button id="btn-award-point" class="btn btn-gold btn-large">+1 POINT</button>
+            <button id="btn-undo-score" class="btn btn-outline" disabled>↺ Undo Last Score</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Question Navigation</h3>
+          <div class="nav-actions">
+            <button id="btn-prev-q" class="btn btn-outline">⬅ Previous</button>
+            <span id="q-nav-indicator">Question 0 of 0</span>
+            <button id="btn-next-q" class="btn btn-outline">Next ➡</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: QUESTION MANAGEMENT -->
+      <section id="tab-questions" class="tab-content">
+        <div class="card">
+          <h3 id="question-form-title">Add New Question</h3>
+          <form id="question-form">
+            <input type="hidden" id="q-edit-id" value="">
+            
+            <div class="form-group">
+              <label for="q-category">Category:</label>
+              <select id="q-category" class="form-control" required>
+                <option value="Active Recall">1. Active Recall</option>
+                <option value="Clues and Biblical Mysteries">2. Clues and Biblical Mysteries</option>
+                <option value="Christ in the Old Testament">3. Christ in the Old Testament</option>
+                <option value="Prophecy and Fulfilment">4. Prophecy and Fulfilment</option>
+                <option value="Biblical Stories and Connections">5. Biblical Stories and Connections</option>
+                <option value="Christlike Living and Scenarios">6. Christlike Living and Scenarios</option>
+                <option value="Simple Bible Questions">7. Simple Bible Questions</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="q-type">Question Type:</label>
+              <select id="q-type" class="form-control" required>
+                <option value="mcq">Multiple Choice (MCQ)</option>
+                <option value="short">Short Answer</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="q-text">Question Text:</label>
+              <textarea id="q-text" class="form-control" rows="3" placeholder="Type question here..." required></textarea>
+            </div>
+
+            <div id="mcq-options-container">
+              <div class="form-group">
+                <label for="q-opt-a">Option A:</label>
+                <input type="text" id="q-opt-a" class="form-control" placeholder="Option A text">
+              </div>
+              <div class="form-group">
+                <label for="q-opt-b">Option B:</label>
+                <input type="text" id="q-opt-b" class="form-control" placeholder="Option B text">
+              </div>
+              <div class="form-group">
+                <label for="q-opt-c">Option C:</label>
+                <input type="text" id="q-opt-c" class="form-control" placeholder="Option C text">
+              </div>
+              <div class="form-group">
+                <label for="q-opt-d">Option D:</label>
+                <input type="text" id="q-opt-d" class="form-control" placeholder="Option D text">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="q-answer-key">Answer Key / Notes (Operator Reference Only - NEVER shown on projector):</label>
+              <input type="text" id="q-answer-key" class="form-control" placeholder="e.g. Option B / Jesus Christ">
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" id="btn-save-question" class="btn btn-primary">Save Question</button>
+              <button type="button" id="btn-cancel-q-edit" class="btn btn-outline" style="display:none;">Cancel Edit</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Question Bank</h3>
+          <div id="questions-list" class="item-list">
+            <p class="empty-msg">No questions added yet. Add your first question above.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: CANDIDATE MANAGEMENT -->
+      <section id="tab-candidates" class="tab-content">
+        <div class="card">
+          <h3>Manage Candidates</h3>
+          <form id="candidate-form">
+            <input type="hidden" id="c-edit-id" value="">
+            <div class="form-group">
+              <label for="c-name">Candidate Full Name:</label>
+              <input type="text" id="c-name" class="form-control" placeholder="Enter full name" required>
+            </div>
+            <div class="form-actions">
+              <button type="submit" id="btn-save-candidate" class="btn btn-primary">Add Candidate</button>
+              <button type="button" id="btn-cancel-c-edit" class="btn btn-outline" style="display:none;">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Registered Candidates</h3>
+          <div id="candidates-list" class="item-list">
+            <p class="empty-msg">No candidates registered yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: BACKUP & DATA -->
+      <section id="tab-data" class="tab-content">
+        <div class="card">
+          <h3>Data Management & Storage Note</h3>
+          <p class="help-text warning-text">
+            ⚠️ <strong>Important:</strong> Quiz data is stored strictly in this local browser window (`localStorage`). It does not sync across devices or browsers automatically. Always export a JSON backup before the event!
+          </p>
+          <div class="btn-stack">
+            <button id="btn-export-backup" class="btn btn-outline-primary">📥 Export JSON Backup</button>
+            
+            <label for="import-file-input" class="btn btn-outline-secondary custom-file-upload">
+              📤 Import JSON Backup
+            </label>
+            <input type="file" id="import-file-input" accept=".json" style="display:none;">
+
+            <button id="btn-export-csv" class="btn btn-gold">📊 Export Final Results (CSV)</button>
+          </div>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- RIGHT PANEL: DISPLAY & LEADERBOARD (Operator Preview / Projector Canvas) -->
+    <section class="display-panel" id="projector-canvas">
+      
+      <!-- PROJECTOR BANNER -->
+      <div class="projector-header">
+        <div class="projector-title">CHRISTOPHILIA</div>
+        <div class="projector-theme">Timeless Christ: Influencing Campus and Culture</div>
+        <div class="projector-badge" id="projector-status-badge">READY</div>
+      </div>
+
+      <!-- MAIN QUESTION DISPLAY AREA -->
+      <div class="question-display-card">
+        <div class="q-meta">
+          <span class="q-category-tag" id="disp-q-category">Category: Select / Start Quiz</span>
+          <span class="q-number-tag" id="disp-q-number">Question - / -</span>
+        </div>
+
+        <div class="q-body">
+          <h2 id="disp-q-text">Welcome to the CHRISTOPHILIA Bible Quiz. Please start the quiz session from the operator panel when ready.</h2>
+        </div>
+
+        <div class="q-options-grid" id="disp-q-options">
+          <!-- Options rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- LIVE LEADERBOARD DISPLAY AREA -->
+      <div class="leaderboard-card">
+        <div class="leaderboard-header">
+          <h3>🏆 CANDIDATE LEADERBOARD</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Candidate Name</th>
+                <th class="text-right">Score (Points)</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+              <tr>
+                <td colspan="3" class="text-center text-muted">No candidate scores recorded yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FINAL OVERLAY / SUMMARY (Hidden by default) -->
+      <div id="final-results-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+          <h2>🎉 QUIZ CONCLUDED 🎉</h2>
+          <p class="modal-subtitle">CHRISTOPHILIA Bible Quiz Final Leaderboard</p>
+          <div id="final-leaderboard-container"></div>
+          <div class="modal-actions">
+            <button id="btn-close-modal" class="btn btn-primary">Close Overlay</button>
+            <button id="btn-modal-export-csv" class="btn btn-gold">Export CSV Results</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
